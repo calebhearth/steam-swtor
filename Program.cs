@@ -6,27 +6,27 @@ using System.Management;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace steamswtor
+namespace SteamSWToR
 {
 	class Program
 	{
+        /// <summary>
+        /// Check that we are running at least Windows 6 (Vista)
+        /// </summary>
+        /// <returns>True if we are on Windows Vista or higher.</returns>
 		static bool IsPreVista()
 		{
-			//Vista or higher check
-			if (System.Environment.OSVersion.Version.Major < 6)
-			{
-				MessageBox.Show("Windows Vista or higher is required.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return true;
-			}
-
-			return false;
+            return System.Environment.OSVersion.Version.Major < 6;
 		}
 
-		static void Main(string[] args)
+		static int Main(string[] args)
 		{
 			// If Operating System is before Vista, then exit
-			if (IsPreVista())
-			return;
+            if (IsPreVista())
+            {
+                MessageBox.Show("Windows Vista or higher is required.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 1;
+            }
 
 			if (args.Length == 0)
 			{
@@ -46,7 +46,7 @@ namespace steamswtor
 					string errmsg = e.Message + "\n";
 					errmsg += "Failed to escalate. Program will now exit.";
 					MessageBox.Show(errmsg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
+					return 1;
 				}
 
 				// run the swtor launcher
@@ -61,11 +61,8 @@ namespace steamswtor
 					string errmsg = e.Message + "\n";
 					errmsg += "Launcher failed to begin. Is this exe in SWTOR's home directory? Program will now exit.";
 					MessageBox.Show(errmsg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
+					return 1;
 				}
-
-				// loop waiting for our temp file to be filled with swtor's commandline arguments
-				Console.WriteLine("Waiting for our other program to finish...");
 
 				// grab data from the commandline arguments
 				string exe, arguments, workingdirectory;
@@ -87,7 +84,7 @@ namespace steamswtor
 					string errmsg = e.Message + "\n";
 					errmsg += "Failed to read command line arguments from other program. Program will now exit.";
 					MessageBox.Show(errmsg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
+					return 1;
 				}
 
 				try
@@ -104,11 +101,11 @@ namespace steamswtor
 					string errmsg = e.Message + "\n";
 					errmsg += "swtor.exe failed to begin. Is this exe in SWTOR's home directory? Program will now exit.";
 					MessageBox.Show(errmsg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
+					return 1;
 				}
 
 				// exit the program
-				return;
+				return 0;
 			}
 			else
 			{
@@ -124,14 +121,12 @@ namespace steamswtor
 					string errmsg = e.Message + "\n";
 					errmsg += "Failed to connect to other program. Program will now exit.";
 					MessageBox.Show(errmsg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
+					return 1;
 				}
 				
 				//Create the query
 				ObjectQuery query = new ObjectQuery("Select * from Win32_Process Where Name =\"swtor.exe\"");
 
-				// check once a second for swtor.exe that the launcher starts when the user hit's play in the launcher
-				Console.WriteLine("Waiting for launcher to start swtor...");
 				while (true)
 				{
 					ManagementObjectSearcher searcher = new ManagementObjectSearcher(query);
@@ -158,11 +153,11 @@ namespace steamswtor
 								string errmsg = e.Message + "\n";
 								errmsg += "Failed to write commandline arguments to pipe. Program will now exit.";
 								MessageBox.Show(errmsg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-								return;
+								return 1;
 							}
 
 							// exit the program
-							return;
+							return 0;
 						}
 					}
 
