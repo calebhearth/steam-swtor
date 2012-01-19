@@ -14,7 +14,11 @@ Build Program.cs one of two ways:
    The code will take the contents of the text file you pasted and pass
    them into the C# (C Sharp) compiler on your system.  It will create an
    exe file, `Star Wars - The Old Republic.exe` for you.
-   `%windir%\Microsoft.Net\Framework\v3.5\csc /platform:x86 "/out:%USERPROFILE%\Desktop\Star Wars - The Old Republic.exe" "%USERPROFILE%\Desktop\Star Wars - The Old Republic.txt"`
+
+         %windir%\Microsoft.Net\Framework\v3.5\csc /platform:x86 ^
+         "/out:%USERPROFILE%\Desktop\Star Wars - The Old Republic.exe" ^
+         "%USERPROFILE%\Desktop\Star Wars - The Old Republic.txt"
+
 4. Copy `Star Wars - The Old Republic.exe` from your desktop into SWToR's
    install folder.  It is likely located at
     `C:\Program Files (x86)\Electronic Arts\BioWare\Star Wars - The Old Republic\`
